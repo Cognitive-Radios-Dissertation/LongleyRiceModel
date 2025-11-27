@@ -24,7 +24,7 @@ L_fs = 32.44 + 20 * log10(dist_km) + 20 * log10(freq_mhz);
 **Verification:** ✅ **Correct**
 
 This is the standard Free Space Path Loss (FSPL) formula derived from the Friis transmission equation:
-- L_fs(dB) = 20·log₁₀(4πd/λ)
+- L_fs(dB) = 20 * log10(4 * pi * d / lambda)
 - With d in km and f in MHz, the constant 32.44 is correct.
 
 ### 1.2 Effective Antenna Height Calculation (`+itm/zlsq1.m`)
@@ -135,7 +135,9 @@ nu = h * sqrt((2 / lambda) * (d_total_m / (d1 * d2)));
 **Verification:** ✅ **Correct**
 
 This is the standard Fresnel-Kirchhoff diffraction parameter formula:
-$$\nu = h \sqrt{\frac{2}{\lambda} \cdot \frac{d_1 + d_2}{d_1 \cdot d_2}} = h \sqrt{\frac{2}{\lambda} \cdot \frac{d}{d_1 \cdot d_2}}$$
+```
+nu = h * sqrt((2/lambda) * (d1 + d2)/(d1 * d2)) = h * sqrt((2/lambda) * (d/(d1 * d2)))
+```
 
 where:
 - h = obstacle height above LOS
@@ -157,7 +159,11 @@ end
 **Verification:** ✅ **Correct**
 
 This is the standard approximation for knife-edge diffraction loss (Lee/ITU approximation):
-$$J(\nu) = 6.9 + 20 \log_{10}\left(\sqrt{(\nu - 0.1)^2 + 1} + \nu - 0.1\right)$$
+```
+J(nu) = 6.91 + 20 * log10(sqrt((nu - 0.1)^2 + 1) + nu - 0.1)
+```
+
+Note: Some references use 6.9 while others use 6.91. The implementation uses 6.91, which appears in several authoritative sources and provides marginally better accuracy.
 
 The threshold of ν > -0.78 is appropriate, as diffraction loss becomes negligible when the path is well within the line-of-sight region (negative ν indicates clearance above the obstacle).
 
